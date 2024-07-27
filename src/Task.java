@@ -1,15 +1,12 @@
-import java.util.HashMap;
-
 public class Task {
+    private static int counter;
+    private final Integer id;
     private final String title;
     private final String description;
     private TaskStatus taskStatus;
-    private final int id;
-    private final HashMap<Integer, Task> taskHashMap;
 
-    protected Task(int id, String title, String description) {
-        taskHashMap = new HashMap<>();
-        this.id = id;
+    protected Task(String title, String description) {
+        this.id = ++counter;
         this.title = title;
         this.description = description;
     }
@@ -22,26 +19,17 @@ public class Task {
         this.taskStatus = taskStatus;
     }
 
-    public final TaskStatus getTaskStatus() {
+    protected final TaskStatus getTaskStatus() {
         return taskStatus;
     }
 
-    protected final void setTask(Task task) {
-        taskHashMap.put(task.getId(), task);
-    }
-
-    protected final HashMap<Integer, Task> getTaskHashMap() {
-        return taskHashMap;
-    }
-
     @Override
-    public final String toString() {
+    public String toString() {
         return getClass().getName() + "{" +
-                "title='" + title + '\'' +
+                "id=" + id +
+                ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", taskStatus=" + taskStatus +
-                ", id=" + id +
-                ", " + getClass().getName() + "HashMap=" + taskHashMap +
                 '}';
     }
 }
