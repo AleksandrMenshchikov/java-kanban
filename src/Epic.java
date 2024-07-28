@@ -1,22 +1,27 @@
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public final class Epic extends Task {
-    private final HashMap<Integer, Integer> subtaskIds = new HashMap<>();
+    private final ArrayList<Integer> subtaskIds = new ArrayList<>();
 
-    public Epic(String title, String description) {
-        super(title, description);
+    public Epic(int id, String title, String description) {
+        super(id, title, description);
     }
 
     public void addSubtask(int subtaskId) {
-        subtaskIds.put(subtaskId, subtaskId);
+        subtaskIds.add(subtaskId);
     }
 
-    public HashMap<Integer, Integer> getSubtaskIds() {
+    public ArrayList<Integer> getSubtaskIds() {
         return subtaskIds;
     }
 
     public void deleteSubtaskId(int subtaskId) {
-        subtaskIds.remove(subtaskId);
+        for (int i = 0; i < subtaskIds.size(); i++) {
+            if (subtaskIds.get(i).equals(subtaskId)) {
+                subtaskIds.remove(i);
+                break;
+            }
+        }
     }
 
     @Override
@@ -24,7 +29,7 @@ public final class Epic extends Task {
         String superString = super.toString();
 
         return superString.substring(0, superString.length() - 1) + ", " +
-                "subtaskIds=" + subtaskIds.values() +
+                "subtaskIds=" + subtaskIds +
                 '}';
     }
 }

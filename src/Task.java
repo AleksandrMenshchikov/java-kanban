@@ -1,12 +1,11 @@
 public class Task {
-    private static int counter;
     private final Integer id;
     private final String title;
     private final String description;
     private TaskStatus taskStatus;
 
-    protected Task(String title, String description) {
-        this.id = ++counter;
+    protected Task(int id, String title, String description) {
+        this.id = id;
         this.title = title;
         this.description = description;
     }
