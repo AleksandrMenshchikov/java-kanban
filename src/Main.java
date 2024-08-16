@@ -1,7 +1,7 @@
 public class Main {
 
     public static void main(String[] args) {
-        TaskManager taskManager = new TaskManager();
+        TaskManager taskManager = Managers.getDefault();
         taskManager.createTask("t", "d");
         taskManager.createTask("t", "d");
         taskManager.updateTask(1, "t", "d");
