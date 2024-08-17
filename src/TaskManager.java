@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public interface TaskManager {
     HashMap<Integer, Task> getTasks();
@@ -44,5 +45,5 @@ public interface TaskManager {
 
     void clearSubtasks();
 
-    void printAllData();
+    List<Task> getHistory();
 }

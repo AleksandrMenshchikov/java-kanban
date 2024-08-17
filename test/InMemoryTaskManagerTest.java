@@ -2,7 +2,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class InMemoryTaskManagerTest {
-    TaskManager taskManager = Managers.getDefault();
+    TaskManager taskManager = new Managers().getDefault();
 
     @Test
     void getTasks() {
@@ -333,5 +333,38 @@ class InMemoryTaskManagerTest {
         Assertions.assertFalse(taskManager.getSubtasks().isEmpty());
         taskManager.clearSubtasks();
         Assertions.assertTrue(taskManager.getSubtasks().isEmpty());
+    }
+
+    @Test
+    void getHistory() {
+        taskManager.createTask("t", "d");
+        taskManager.createEpic("t", "d");
+
+        Task task = null;
+        for (Task value : taskManager.getTasks().values()) {
+            task = value;
+        }
+
+        Epic epic = null;
+        for (Epic value : taskManager.getEpics().values()) {
+            epic = value;
+        }
+
+        Assertions.assertNotNull(task);
+        Assertions.assertNotNull(epic);
+        taskManager.createSubtask(epic.getId(), "t", "d");
+
+        Subtask subtask = null;
+        for (Subtask value : taskManager.getSubtasks().values()) {
+            subtask = value;
+        }
+
+        Assertions.assertNotNull(subtask);
+        taskManager.getTaskById(task.getId());
+        taskManager.getEpicById(epic.getId());
+        taskManager.getSubtaskById(subtask.getId());
+        Assertions.assertTrue(taskManager.getHistory().contains(task));
+        Assertions.assertTrue(taskManager.getHistory().contains(epic));
+        Assertions.assertTrue(taskManager.getHistory().contains(subtask));
     }
 }

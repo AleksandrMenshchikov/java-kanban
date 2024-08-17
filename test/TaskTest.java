@@ -13,6 +13,16 @@ class TaskTest {
     }
 
     @Test
+    void getTitle() {
+        Assertions.assertEquals(title, task.getTitle());
+    }
+
+    @Test
+    void getDescription() {
+        Assertions.assertEquals(description, task.getDescription());
+    }
+
+    @Test
     void setTaskStatus() {
         Assertions.assertNull(task.getTaskStatus());
         task.setTaskStatus(TaskStatus.NEW);

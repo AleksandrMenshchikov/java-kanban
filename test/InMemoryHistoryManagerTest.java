@@ -2,7 +2,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class InMemoryHistoryManagerTest {
-    private final HistoryManager historyManager = Managers.getDefaultHistory();
+    private final HistoryManager historyManager = new Managers().getDefaultHistory();
 
     @Test
     void add() {

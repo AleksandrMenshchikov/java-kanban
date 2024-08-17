@@ -5,11 +5,11 @@ class ManagersTest {
 
     @Test
     void getDefault() {
-        Assertions.assertInstanceOf(TaskManager.class, Managers.getDefault());
+        Assertions.assertInstanceOf(TaskManager.class, new Managers().getDefault());
     }
 
     @Test
     void getDefaultHistory() {
-        Assertions.assertInstanceOf(HistoryManager.class, Managers.getDefaultHistory());
+        Assertions.assertInstanceOf(HistoryManager.class, new Managers().getDefaultHistory());
     }
 }

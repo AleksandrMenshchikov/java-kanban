@@ -24,6 +24,14 @@ public class Task {
         return taskStatus;
     }
 
+    protected final String getTitle() {
+        return title;
+    }
+
+    protected final String getDescription() {
+        return description;
+    }
+
     @Override
     public String toString() {
         return getClass().getName() + "{" +

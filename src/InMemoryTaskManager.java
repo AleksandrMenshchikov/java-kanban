@@ -1,12 +1,17 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public final class InMemoryTaskManager implements TaskManager {
     private static int counter;
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
-    HistoryManager historyManager = Managers.getDefaultHistory();
+    HistoryManager historyManager;
+
+    public InMemoryTaskManager(HistoryManager historyManager) {
+        this.historyManager = historyManager;
+    }
 
     private int createId() {
         return ++counter;
@@ -211,25 +216,7 @@ public final class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void printAllData() {
-        System.out.println("Задачи:");
-        for (Task task : getTasks().values()) {
-            System.out.println(task);
-        }
-
-        System.out.println("Эпики:");
-        for (Task epic : getEpics().values()) {
-            System.out.println(epic);
-        }
-
-        System.out.println("Подзадачи:");
-        for (Task subtask : getSubtasks().values()) {
-            System.out.println(subtask);
-        }
-
-        System.out.println("История:");
-        for (Task task : historyManager.getHistory()) {
-            System.out.println(task);
-        }
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
     }
 }

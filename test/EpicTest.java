@@ -15,6 +15,7 @@ class EpicTest {
         epic.addSubtask(num2);
         Assertions.assertTrue(epic.getSubtaskIds().contains(num1));
         Assertions.assertTrue(epic.getSubtaskIds().contains(num2));
+        Assertions.assertEquals(2, epic.getSubtaskIds().size());
     }
 
     @Test
@@ -27,8 +28,10 @@ class EpicTest {
         addSubtask();
         epic.deleteSubtaskId(num1);
         Assertions.assertFalse(epic.getSubtaskIds().contains(num1));
+        Assertions.assertEquals(1, epic.getSubtaskIds().size());
         epic.deleteSubtaskId(num2);
         Assertions.assertFalse(epic.getSubtaskIds().contains(num2));
+        Assertions.assertEquals(0, epic.getSubtaskIds().size());
     }
 
     @Test
