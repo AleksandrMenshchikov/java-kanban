@@ -7,8 +7,7 @@ class InMemoryHistoryManagerTest {
     int epicId = 2;
     int subtaskId = 3;
 
-    @Test
-    void add() {
+    private void _add() {
         Task task = new Task(taskId, "t", "d");
         Epic epic = new Epic(epicId, "t", "d");
         Subtask subtask = new Subtask(subtaskId, "t", "d");
@@ -21,8 +20,13 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
+    void add() {
+        _add();
+    }
+
+    @Test
     void remove() {
-        add();
+        _add();
         historyManager.remove(taskId);
         historyManager.remove(epicId);
         historyManager.remove(subtaskId);
