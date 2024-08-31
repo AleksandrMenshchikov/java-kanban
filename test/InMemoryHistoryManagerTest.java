@@ -3,19 +3,41 @@ import org.junit.jupiter.api.Test;
 
 class InMemoryHistoryManagerTest {
     private final HistoryManager historyManager = new Managers().getDefaultHistory();
+    int taskId = 1;
+    int epicId = 2;
+    int subtaskId = 3;
+
+    private void _add() {
+        Task task = new Task(taskId, "t", "d");
+        Epic epic = new Epic(epicId, "t", "d");
+        Subtask subtask = new Subtask(subtaskId, "t", "d");
+        historyManager.add(task);
+        historyManager.add(epic);
+        historyManager.add(subtask);
+        Assertions.assertTrue(historyManager.getHistory().contains(task));
+        Assertions.assertTrue(historyManager.getHistory().contains(epic));
+        Assertions.assertTrue(historyManager.getHistory().contains(subtask));
+    }
 
     @Test
     void add() {
-        Task task = new Task(1, "t", "d");
-        historyManager.add(task);
-        Assertions.assertTrue(historyManager.getHistory().contains(task));
+        _add();
+    }
+
+    @Test
+    void remove() {
+        _add();
+        historyManager.remove(taskId);
+        historyManager.remove(epicId);
+        historyManager.remove(subtaskId);
+        Assertions.assertTrue(historyManager.getHistory().isEmpty());
     }
 
     @Test
     void getHistory() {
-        int maxReturnedElements = 10;
+        int maxReturnedElements = 1000;
 
-        for (int i = 0; i < maxReturnedElements + 1; i++) {
+        for (int i = 0; i < maxReturnedElements; i++) {
             historyManager.add(new Task(i, "t", "d"));
         }
 
