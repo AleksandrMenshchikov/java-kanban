@@ -149,11 +149,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
         } catch (IOException e) {
-            try {
-                throw new ManagerSaveException(e.getMessage());
-            } catch (ManagerSaveException ex) {
-                ex.printStackTrace();
-            }
+            throw new ManagerSaveException(e.getMessage());
+        } catch (ManagerSaveException e) {
+            e.printStackTrace();
         }
     }
 
@@ -204,11 +202,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
         } catch (IOException e) {
-            try {
-                throw new ManagerSaveException(e.getMessage());
-            } catch (ManagerSaveException ex) {
-                ex.printStackTrace();
-            }
+            throw new ManagerSaveException(e.getMessage());
+        } catch (ManagerSaveException e) {
+            e.printStackTrace();
         }
     }
 
