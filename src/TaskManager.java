@@ -23,11 +23,11 @@ public interface TaskManager {
 
     void updateSubtask(int subtaskId, String title, String description);
 
-    void createTask(String title, String description);
+    Task createTask(String title, String description);
 
-    void createEpic(String title, String description);
+    Epic createEpic(String title, String description);
 
-    void createSubtask(int epicId, String title, String description);
+    Subtask createSubtask(int epicId, String title, String description);
 
     void deleteTask(int taskId);
 

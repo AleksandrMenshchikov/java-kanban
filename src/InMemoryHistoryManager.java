@@ -10,8 +10,10 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-        remove(task.getId());
-        history.put(task.getId(), linkLast(task));
+        if (task != null) {
+            remove(task.getId());
+            history.put(task.getId(), linkLast(task));
+        }
     }
 
     @Override
