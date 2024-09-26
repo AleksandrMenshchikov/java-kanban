@@ -7,7 +7,7 @@ class EpicTest {
     private final String description = "d";
     private final int num1 = 1;
     private final int num2 = 2;
-    private final Epic epic = new Epic(id, title, description);
+    private final Epic epic = new Epic(id, title, description, null, null);
 
     @Test
     void addSubtask() {
@@ -36,11 +36,11 @@ class EpicTest {
 
     @Test
     void testEquals() {
-        Assertions.assertEquals(epic, new Epic(id, title, description));
+        Assertions.assertEquals(epic, new Epic(id, title, description, null, null));
     }
 
     @Test
     void testHashCode() {
-        Assertions.assertEquals(epic.hashCode(), new Epic(id, title, description).hashCode());
+        Assertions.assertEquals(epic.hashCode(), new Epic(id, title, description, null, null).hashCode());
     }
 }

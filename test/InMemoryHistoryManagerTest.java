@@ -1,6 +1,9 @@
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 class InMemoryHistoryManagerTest {
     private final HistoryManager historyManager = new Managers().getDefaultHistory();
     int taskId = 1;
@@ -8,9 +11,9 @@ class InMemoryHistoryManagerTest {
     int subtaskId = 3;
 
     private void _add() {
-        Task task = new Task(taskId, "t", "d");
-        Epic epic = new Epic(epicId, "t", "d");
-        Subtask subtask = new Subtask(subtaskId, "t", "d");
+        Task task = new Task(taskId, "t", "d", LocalDateTime.now(), Duration.ofMinutes(200));
+        Epic epic = new Epic(epicId, "t", "d", null, null);
+        Subtask subtask = new Subtask(subtaskId, "t", "d", LocalDateTime.now(), Duration.ofMinutes(100));
         historyManager.add(task);
         historyManager.add(epic);
         historyManager.add(subtask);
@@ -38,7 +41,7 @@ class InMemoryHistoryManagerTest {
         int maxReturnedElements = 1000;
 
         for (int i = 0; i < maxReturnedElements; i++) {
-            historyManager.add(new Task(i, "t", "d"));
+            historyManager.add(new Task(i, "t", "d", LocalDateTime.now(), Duration.ofMinutes(100)));
         }
 
         Assertions.assertEquals(maxReturnedElements, historyManager.getHistory().size());

@@ -1,4 +1,5 @@
-import java.util.ArrayList;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,19 +16,21 @@ public interface TaskManager {
 
     Subtask getSubtaskById(Integer subtaskId);
 
-    ArrayList<Subtask> getSubtasksByEpicId(int epicId);
+    List<Subtask> getSubtasksByEpicId(int epicId);
 
-    void updateTask(int taskId, String title, String description);
+    void updateTask(int taskId, String title, String description, LocalDateTime startTime, Duration duration);
 
-    void updateEpic(int epicId, String title, String description);
+    void updateEpic(int epicId, String title, String description, LocalDateTime startTime, Duration duration);
 
-    void updateSubtask(int subtaskId, String title, String description);
+    void updateEpicTime(Epic epic);
 
-    Task createTask(String title, String description);
+    void updateSubtask(int subtaskId, String title, String description, LocalDateTime startTime, Duration duration);
 
-    Epic createEpic(String title, String description);
+    Task createTask(String title, String description, LocalDateTime startTime, Duration duration);
 
-    Subtask createSubtask(int epicId, String title, String description);
+    Epic createEpic(String title, String description, LocalDateTime startTime, Duration duration);
+
+    Subtask createSubtask(int epicId, String title, String description, LocalDateTime startTime, Duration duration);
 
     void deleteTask(int taskId);
 

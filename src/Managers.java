@@ -2,7 +2,7 @@ import java.io.File;
 
 public class Managers {
 
-    public FileBackedTaskManager getDefauldFile(File file) {
+    public FileBackedTaskManager getDefaultFile(File file) {
         return new FileBackedTaskManager(getDefaultHistory(), file);
     }
 
