@@ -1,8 +1,13 @@
+package models;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public final class Subtask extends Task {
     private Integer epicId;
 
-    public Subtask(int id, String title, String description) {
-        super(id, title, description);
+    public Subtask(int id, String title, String description, LocalDateTime startTime, Duration duration) {
+        super(id, title, description, startTime, duration);
     }
 
     public Integer getEpicId() {

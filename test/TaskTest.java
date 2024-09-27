@@ -1,11 +1,17 @@
+import models.Task;
+import models.TaskStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 class TaskTest {
     int id = 1;
     String title = "t";
     String description = "d";
-    Task task = new Task(id, title, description);
+    LocalDateTime localDateTime = LocalDateTime.now();
+    Task task = new Task(id, title, description, localDateTime, Duration.ofMinutes(100));
 
     @Test
     void getId() {
@@ -42,13 +48,13 @@ class TaskTest {
 
     @Test
     void testEquals() {
-        Task task1 = new Task(id, title, description);
+        Task task1 = new Task(id, title, description, localDateTime, Duration.ofMinutes(100));
         Assertions.assertEquals(task, task1);
     }
 
     @Test
     void testHashCode() {
-        Task task1 = new Task(id, title, description);
+        Task task1 = new Task(id, title, description, localDateTime, Duration.ofMinutes(100));
         Assertions.assertEquals(task.hashCode(), task1.hashCode());
     }
 }
