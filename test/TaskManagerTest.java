@@ -1,3 +1,9 @@
+import controllers.Managers;
+import controllers.TaskManager;
+import models.Epic;
+import models.Subtask;
+import models.Task;
+import models.TaskStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -10,23 +16,23 @@ abstract class TaskManagerTest {
     @Test
     void getTasks() {
         Assertions.assertTrue(taskManager.getTasks().isEmpty());
-        taskManager.createTask("t", "d", LocalDateTime.now(), Duration.ofMinutes(100));
+        taskManager.createTask(taskManager.createId(), "t", "d", LocalDateTime.now(), Duration.ofMinutes(100));
         Assertions.assertFalse(taskManager.getTasks().isEmpty());
     }
 
     @Test
     void getEpics() {
         Assertions.assertTrue(taskManager.getEpics().isEmpty());
-        taskManager.createEpic("t", "d", null, null);
+        taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
         Assertions.assertFalse(taskManager.getEpics().isEmpty());
     }
 
     @Test
     void getSubtasks() {
-        taskManager.createEpic("t", "d", null, null);
+        taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
         int epicId = -1;
 
-        for (Epic value : taskManager.getEpics().values()) {
+        for (Epic value : taskManager.getEpics()) {
             epicId = value.getId();
             break;
         }
@@ -38,10 +44,10 @@ abstract class TaskManagerTest {
 
     @Test
     void getTaskById() {
-        taskManager.createTask("t", "d", LocalDateTime.now(), Duration.ofMinutes(100));
+        taskManager.createTask(taskManager.createId(), "t", "d", LocalDateTime.now(), Duration.ofMinutes(100));
         Integer id = null;
 
-        for (Task value : taskManager.getTasks().values()) {
+        for (Task value : taskManager.getTasks()) {
             id = value.getId();
             break;
         }
@@ -51,10 +57,10 @@ abstract class TaskManagerTest {
 
     @Test
     void getEpicById() {
-        taskManager.createEpic("t", "d", null, null);
+        taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
         Integer id = null;
 
-        for (Task value : taskManager.getEpics().values()) {
+        for (Task value : taskManager.getEpics()) {
             id = value.getId();
             break;
         }
@@ -64,10 +70,10 @@ abstract class TaskManagerTest {
 
     @Test
     void getSubtaskById() {
-        taskManager.createEpic("t", "d", null, null);
+        taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
         Integer epicId = null;
 
-        for (Task value : taskManager.getEpics().values()) {
+        for (Task value : taskManager.getEpics()) {
             epicId = value.getId();
             break;
         }
@@ -80,10 +86,10 @@ abstract class TaskManagerTest {
 
     @Test
     void getSubtasksByEpicId() {
-        taskManager.createEpic("t", "d", null, null);
+        taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
         int epicId = -1;
 
-        for (Task value : taskManager.getEpics().values()) {
+        for (Task value : taskManager.getEpics()) {
             epicId = value.getId();
             break;
         }
@@ -94,11 +100,11 @@ abstract class TaskManagerTest {
 
     @Test
     void updateTask() {
-        taskManager.createTask("t", "d", LocalDateTime.now(), Duration.ofMinutes(100));
+        taskManager.createTask(taskManager.createId(), "t", "d", LocalDateTime.now(), Duration.ofMinutes(100));
         Integer taskId1 = null;
         Task task1 = null;
 
-        for (Task value : taskManager.getTasks().values()) {
+        for (Task value : taskManager.getTasks()) {
             taskId1 = value.getId();
             task1 = value;
             break;
@@ -111,7 +117,7 @@ abstract class TaskManagerTest {
         Integer taskId2 = null;
         Task task2 = null;
 
-        for (Task value : taskManager.getTasks().values()) {
+        for (Task value : taskManager.getTasks()) {
             taskId2 = value.getId();
             task2 = value;
             break;
@@ -124,11 +130,11 @@ abstract class TaskManagerTest {
 
     @Test
     void updateEpic() {
-        taskManager.createEpic("t", "d", null, null);
+        taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
         Integer epicId1 = null;
         Epic epic1 = null;
 
-        for (Epic value : taskManager.getEpics().values()) {
+        for (Epic value : taskManager.getEpics()) {
             epicId1 = value.getId();
             epic1 = value;
             break;
@@ -141,7 +147,7 @@ abstract class TaskManagerTest {
         Integer epicId2 = null;
         Epic epic2 = null;
 
-        for (Epic value : taskManager.getEpics().values()) {
+        for (Epic value : taskManager.getEpics()) {
             epicId2 = value.getId();
             epic2 = value;
             break;
@@ -154,10 +160,10 @@ abstract class TaskManagerTest {
 
     @Test
     void updateSubtask() {
-        taskManager.createEpic("t", "d", null, null);
+        taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
         Epic epic = null;
 
-        for (Epic value : taskManager.getEpics().values()) {
+        for (Epic value : taskManager.getEpics()) {
             epic = value;
             break;
         }
@@ -176,24 +182,24 @@ abstract class TaskManagerTest {
     @Test
     void createTask() {
         Assertions.assertTrue(taskManager.getTasks().isEmpty());
-        taskManager.createTask("t", "d", LocalDateTime.now(), Duration.ofMinutes(300));
+        taskManager.createTask(taskManager.createId(), "t", "d", LocalDateTime.now(), Duration.ofMinutes(300));
         Assertions.assertFalse(taskManager.getTasks().isEmpty());
     }
 
     @Test
     void createEpic() {
         Assertions.assertTrue(taskManager.getEpics().isEmpty());
-        taskManager.createEpic("t", "d", null, null);
+        taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
         Assertions.assertFalse(taskManager.getEpics().isEmpty());
     }
 
     @Test
     void createSubtask() {
         Assertions.assertTrue(taskManager.getSubtasks().isEmpty());
-        taskManager.createEpic("t", "d", null, null);
+        taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
         Epic epic = null;
 
-        for (Epic value : taskManager.getEpics().values()) {
+        for (Epic value : taskManager.getEpics()) {
             epic = value;
             break;
         }
@@ -206,11 +212,11 @@ abstract class TaskManagerTest {
     @Test
     void deleteTask() {
         Assertions.assertTrue(taskManager.getTasks().isEmpty());
-        taskManager.createTask("t", "d", LocalDateTime.now(), Duration.ofMinutes(300));
+        taskManager.createTask(taskManager.createId(), "t", "d", LocalDateTime.now(), Duration.ofMinutes(300));
         Assertions.assertFalse(taskManager.getTasks().isEmpty());
         Task task = null;
 
-        for (Task value : taskManager.getTasks().values()) {
+        for (Task value : taskManager.getTasks()) {
             task = value;
         }
 
@@ -222,11 +228,11 @@ abstract class TaskManagerTest {
     @Test
     void deleteEpic() {
         Assertions.assertTrue(taskManager.getEpics().isEmpty());
-        taskManager.createEpic("t", "d", null, null);
+        taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
         Assertions.assertFalse(taskManager.getEpics().isEmpty());
         Epic epic = null;
 
-        for (Epic value : taskManager.getEpics().values()) {
+        for (Epic value : taskManager.getEpics()) {
             epic = value;
         }
 
@@ -238,10 +244,10 @@ abstract class TaskManagerTest {
     @Test
     void deleteSubtask() {
         Assertions.assertTrue(taskManager.getSubtasks().isEmpty());
-        taskManager.createEpic("t", "d", null, null);
+        taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
         Epic epic = null;
 
-        for (Epic value : taskManager.getEpics().values()) {
+        for (Epic value : taskManager.getEpics()) {
             epic = value;
         }
 
@@ -252,7 +258,7 @@ abstract class TaskManagerTest {
         Assertions.assertFalse(epic.getSubtaskIds().isEmpty());
         Subtask subtask = null;
 
-        for (Subtask value : taskManager.getSubtasks().values()) {
+        for (Subtask value : taskManager.getSubtasks()) {
             subtask = value;
         }
 
@@ -264,10 +270,10 @@ abstract class TaskManagerTest {
 
     @Test
     void updateTaskStatusOfTask() {
-        taskManager.createTask("t", "d", LocalDateTime.now(), Duration.ofMinutes(300));
+        taskManager.createTask(taskManager.createId(), "t", "d", LocalDateTime.now(), Duration.ofMinutes(300));
         Task task = null;
 
-        for (Task value : taskManager.getTasks().values()) {
+        for (Task value : taskManager.getTasks()) {
             task = value;
         }
 
@@ -281,10 +287,10 @@ abstract class TaskManagerTest {
 
     @Test
     void updateTaskStatusOfSubtask() {
-        taskManager.createEpic("t", "d", null, null);
+        taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
         Epic epic = null;
 
-        for (Epic value : taskManager.getEpics().values()) {
+        for (Epic value : taskManager.getEpics()) {
             epic = value;
         }
 
@@ -306,7 +312,7 @@ abstract class TaskManagerTest {
     @Test
     void clearTasks() {
         Assertions.assertTrue(taskManager.getTasks().isEmpty());
-        taskManager.createTask("t", "d", LocalDateTime.now(), Duration.ofMinutes(300));
+        taskManager.createTask(taskManager.createId(), "t", "d", LocalDateTime.now(), Duration.ofMinutes(300));
         Assertions.assertFalse(taskManager.getTasks().isEmpty());
         taskManager.clearTasks();
         Assertions.assertTrue(taskManager.getTasks().isEmpty());
@@ -315,7 +321,7 @@ abstract class TaskManagerTest {
     @Test
     void clearEpics() {
         Assertions.assertTrue(taskManager.getEpics().isEmpty());
-        taskManager.createEpic("t", "d", null, null);
+        taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
         Assertions.assertFalse(taskManager.getEpics().isEmpty());
         taskManager.clearEpics();
         Assertions.assertTrue(taskManager.getEpics().isEmpty());
@@ -324,10 +330,10 @@ abstract class TaskManagerTest {
     @Test
     void clearSubtasks() {
         Assertions.assertTrue(taskManager.getSubtasks().isEmpty());
-        taskManager.createEpic("t", "d", null, null);
+        taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
         Epic epic = null;
 
-        for (Epic value : taskManager.getEpics().values()) {
+        for (Epic value : taskManager.getEpics()) {
             epic = value;
         }
 
@@ -340,16 +346,16 @@ abstract class TaskManagerTest {
 
     @Test
     void getHistory() {
-        taskManager.createTask("t", "d", LocalDateTime.now(), Duration.ofMinutes(300));
-        taskManager.createEpic("t", "d", null, null);
+        taskManager.createTask(taskManager.createId(), "t", "d", LocalDateTime.now(), Duration.ofMinutes(300));
+        taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
 
         Task task = null;
-        for (Task value : taskManager.getTasks().values()) {
+        for (Task value : taskManager.getTasks()) {
             task = value;
         }
 
         Epic epic = null;
-        for (Epic value : taskManager.getEpics().values()) {
+        for (Epic value : taskManager.getEpics()) {
             epic = value;
         }
 
@@ -358,7 +364,7 @@ abstract class TaskManagerTest {
         taskManager.createSubtask(epic.getId(), "t", "d", LocalDateTime.now().plusMinutes(300), Duration.ofMinutes(300));
 
         Subtask subtask = null;
-        for (Subtask value : taskManager.getSubtasks().values()) {
+        for (Subtask value : taskManager.getSubtasks()) {
             subtask = value;
         }
 

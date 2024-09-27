@@ -1,20 +1,28 @@
+package controllers;
+
+import models.Epic;
+import models.Subtask;
+import models.Task;
+import models.TaskStatus;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 
 public interface TaskManager {
-    HashMap<Integer, Task> getTasks();
+    int createId();
 
-    HashMap<Integer, Epic> getEpics();
+    List<Task> getTasks();
 
-    HashMap<Integer, Subtask> getSubtasks();
+    List<Epic> getEpics();
 
-    Task getTaskById(Integer taskId);
+    List<Subtask> getSubtasks();
 
-    Epic getEpicById(Integer epicId);
+    Task getTaskById(int taskId);
 
-    Subtask getSubtaskById(Integer subtaskId);
+    Epic getEpicById(int epicId);
+
+    Subtask getSubtaskById(int subtaskId);
 
     List<Subtask> getSubtasksByEpicId(int epicId);
 
@@ -26,9 +34,9 @@ public interface TaskManager {
 
     void updateSubtask(int subtaskId, String title, String description, LocalDateTime startTime, Duration duration);
 
-    Task createTask(String title, String description, LocalDateTime startTime, Duration duration);
+    Task createTask(int taskId, String title, String description, LocalDateTime startTime, Duration duration);
 
-    Epic createEpic(String title, String description, LocalDateTime startTime, Duration duration);
+    Epic createEpic(int epicId, String title, String description, LocalDateTime startTime, Duration duration);
 
     Subtask createSubtask(int epicId, String title, String description, LocalDateTime startTime, Duration duration);
 
@@ -49,4 +57,6 @@ public interface TaskManager {
     void clearSubtasks();
 
     List<Task> getHistory();
+
+    List<Task> getPrioritizedTasks();
 }

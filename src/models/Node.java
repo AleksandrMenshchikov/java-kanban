@@ -1,3 +1,5 @@
+package models;
+
 public class Node<E> {
     private final E data;
     private Node<E> prev;

@@ -1,3 +1,8 @@
+package models;
+
+import controllers.HistoryManager;
+import controllers.TaskManager;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,18 +18,18 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
     private final TreeSet<Task> prioritizedTasks = new TreeSet<>(Comparator.comparing(Task::getStartTime));
-    HistoryManager historyManager;
+    private final HistoryManager historyManager;
 
     public InMemoryTaskManager(HistoryManager historyManager) {
         this.historyManager = historyManager;
     }
 
-    static int createId() {
+    public int createId() {
         return ++counter;
     }
 
-    public TreeSet<Task> getPrioritizedTasks() {
-        return prioritizedTasks;
+    public List<Task> getPrioritizedTasks() {
+        return new ArrayList<>(prioritizedTasks);
     }
 
     private void addPrioritizedTask(Task task) {
@@ -38,7 +43,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    private boolean checkCrossTask(TreeSet<Task> prioritizedTasks, Task task) {
+    private boolean checkCrossTask(Task task) {
         for (Task prioritizedTask : prioritizedTasks) {
             if (task.getStartTime().equals(prioritizedTask.getStartTime()) ||
                     task.getStartTime().equals(prioritizedTask.getEndTime()) ||
@@ -57,36 +62,36 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public HashMap<Integer, Task> getTasks() {
-        return tasks;
+    public List<Task> getTasks() {
+        return new ArrayList<>(tasks.values());
     }
 
     @Override
-    public HashMap<Integer, Epic> getEpics() {
-        return epics;
+    public List<Epic> getEpics() {
+        return new ArrayList<>(epics.values());
     }
 
     @Override
-    public HashMap<Integer, Subtask> getSubtasks() {
-        return subtasks;
+    public List<Subtask> getSubtasks() {
+        return new ArrayList<>(subtasks.values());
     }
 
     @Override
-    public Task getTaskById(Integer taskId) {
+    public Task getTaskById(int taskId) {
         Task task = tasks.get(taskId);
         historyManager.add(task);
         return task;
     }
 
     @Override
-    public Epic getEpicById(Integer epicId) {
+    public Epic getEpicById(int epicId) {
         Epic epic = epics.get(epicId);
         historyManager.add(epic);
         return epic;
     }
 
     @Override
-    public Subtask getSubtaskById(Integer subtaskId) {
+    public Subtask getSubtaskById(int subtaskId) {
         Subtask subtask = subtasks.get(subtaskId);
         historyManager.add(subtask);
         return subtask;
@@ -110,7 +115,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (oldTask != null) {
             Task task = new Task(createId(), title, description, startTime, duration);
 
-            if (checkCrossTask(getPrioritizedTasks(), task)) {
+            if (checkCrossTask(task)) {
                 throw new RuntimeException("Задача пересекается по времени выполнения");
             }
 
@@ -126,20 +131,16 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateEpicTime(Epic epic) {
         ArrayList<Integer> subtaskIds = epic.getSubtaskIds();
 
-        List<Subtask> list = getSubtasks().values().stream().filter(elem -> subtaskIds.contains(elem.getId())).sorted(Comparator.comparing(Task::getStartTime)).toList();
+        List<Subtask> list = getSubtasks().stream().filter(elem -> subtaskIds.contains(elem.getId())).sorted(Comparator.comparing(Task::getStartTime)).toList();
         epic.setStartTime(list.getFirst().getStartTime());
+        epic.setEndTime(list.getLast().getEndTime());
 
-        List<Subtask> list1 = list.stream().sorted((a, b) -> {
-            if (Objects.requireNonNull(a.getEndTime()).isAfter(b.getEndTime())) {
-                return -1;
-            } else if (a.getEndTime().equals(b.getEndTime())) {
-                return 0;
-            } else {
-                return 1;
-            }
-        }).toList();
-        Duration between = Duration.between(list.getFirst().getStartTime(), list1.getFirst().getEndTime());
-        epic.setDuration(between);
+        Duration duration = list.stream()
+                .map((Task::getDuration))
+                .reduce((Duration::plus))
+                .orElse(null);
+
+        epic.setDuration(duration);
     }
 
     @Override
@@ -168,7 +169,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (s != null) {
             Subtask subtask = new Subtask(createId(), title, description, startTime, duration);
 
-            if (checkCrossTask(getPrioritizedTasks(), subtask)) {
+            if (checkCrossTask(subtask)) {
                 throw new RuntimeException("Задача пересекается по времени выполнения");
             }
 
@@ -186,10 +187,10 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Task createTask(String title, String description, LocalDateTime startTime, Duration duration) {
-        Task task = new Task(createId(), title, description, startTime, duration);
+    public Task createTask(int taskId, String title, String description, LocalDateTime startTime, Duration duration) {
+        Task task = new Task(taskId, title, description, startTime, duration);
 
-        if (checkCrossTask(getPrioritizedTasks(), task)) {
+        if (checkCrossTask(task)) {
             throw new RuntimeException("Задача пересекается по времени выполнения");
         }
 
@@ -200,8 +201,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Epic createEpic(String title, String description, LocalDateTime startTime, Duration duration) {
-        Epic epic = new Epic(createId(), title, description, startTime, duration);
+    public Epic createEpic(int epicId, String title, String description, LocalDateTime startTime, Duration duration) {
+        Epic epic = new Epic(epicId, title, description, startTime, duration);
         epics.put(epic.getId(), epic);
         epic.setTaskStatus(TaskStatus.NEW);
         return epic;
@@ -212,7 +213,7 @@ public class InMemoryTaskManager implements TaskManager {
         if (epics.containsKey(epicId)) {
             Subtask subtask = new Subtask(createId(), title, description, startTime, duration);
 
-            if (checkCrossTask(getPrioritizedTasks(), subtask)) {
+            if (checkCrossTask(subtask)) {
                 throw new RuntimeException("Задача пересекается по времени выполнения");
             }
 
@@ -304,7 +305,7 @@ public class InMemoryTaskManager implements TaskManager {
         tasks.clear();
 
         for (Task prioritizedTask : getPrioritizedTasks()) {
-            if (prioritizedTask.getClass().getName().equals("Task")) {
+            if (prioritizedTask.getClass().getSimpleName().equals("model.Task")) {
                 removePrioritizedTask(prioritizedTask);
             }
         }
@@ -325,7 +326,7 @@ public class InMemoryTaskManager implements TaskManager {
         }
 
         for (Task prioritizedTask : getPrioritizedTasks()) {
-            if (prioritizedTask.getClass().getName().equals("Subtask")) {
+            if (prioritizedTask.getClass().getSimpleName().equals("model.Subtask")) {
                 removePrioritizedTask(prioritizedTask);
             }
         }

@@ -1,3 +1,5 @@
+package models;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -10,7 +12,7 @@ public class Task {
     private LocalDateTime startTime;
     private Duration duration;
 
-    protected Task(int id, String title, String description, LocalDateTime startTime, Duration duration) {
+    public Task(int id, String title, String description, LocalDateTime startTime, Duration duration) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -22,19 +24,19 @@ public class Task {
         return id;
     }
 
-    protected final TaskStatus getTaskStatus() {
+    public final TaskStatus getTaskStatus() {
         return taskStatus;
     }
 
-    protected final void setTaskStatus(TaskStatus taskStatus) {
+    public final void setTaskStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
     }
 
-    protected final String getTitle() {
+    public final String getTitle() {
         return title;
     }
 
-    protected final String getDescription() {
+    public final String getDescription() {
         return description;
     }
 
@@ -54,7 +56,7 @@ public class Task {
         this.duration = duration;
     }
 
-    protected final LocalDateTime getEndTime() {
+    protected LocalDateTime getEndTime() {
         if (startTime == null || duration == null) {
             return null;
         }
@@ -64,7 +66,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return getClass().getName() + "{" +
+        return getClass().getSimpleName() + "{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +

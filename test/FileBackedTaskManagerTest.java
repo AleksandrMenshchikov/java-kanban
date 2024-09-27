@@ -1,4 +1,12 @@
+import controllers.Managers;
+import models.Epic;
+import models.FileBackedTaskManager;
+import models.Subtask;
+import models.Task;
+import models.TaskStatus;
+import models.TaskType;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -11,6 +19,7 @@ import java.time.LocalDateTime;
 
 class FileBackedTaskManagerTest extends TaskManagerTest {
     File tempFile;
+    FileBackedTaskManager fBTM;
 
     {
         try {
@@ -21,7 +30,10 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         }
     }
 
-    FileBackedTaskManager fBTM = new Managers().getDefaultFile(tempFile);
+    @BeforeEach
+    void init() {
+        fBTM = new Managers().getDefaultFile(tempFile);
+    }
 
     @Test
     void testToString() {
@@ -50,7 +62,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
     void createTask() {
         String title = "t";
         String description = "d";
-        Task task = fBTM.createTask(title, description, LocalDateTime.now(), Duration.ofMinutes(20));
+        Task task = fBTM.createTask(fBTM.createId(), title, description, LocalDateTime.now(), Duration.ofMinutes(20));
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(tempFile, StandardCharsets.UTF_8))) {
             while (bufferedReader.ready()) {
@@ -68,7 +80,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
     void createEpic() {
         String title = "t";
         String description = "d";
-        Epic epic = fBTM.createEpic(title, description, null, null);
+        Epic epic = fBTM.createEpic(fBTM.createId(), title, description, null, null);
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(tempFile, StandardCharsets.UTF_8))) {
             while (bufferedReader.ready()) {
@@ -86,7 +98,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
     void createSubtask() {
         String title = "t";
         String description = "d";
-        Epic epic = fBTM.createEpic(title, description, null, null);
+        Epic epic = fBTM.createEpic(fBTM.createId(), title, description, null, null);
         Subtask subtask = fBTM.createSubtask(epic.getId(), title, description, LocalDateTime.now(), Duration.ofMinutes(300));
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(tempFile, StandardCharsets.UTF_8))) {
@@ -109,8 +121,8 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
     void deleteTask() {
         String title = "t";
         String description = "d";
-        Task task = fBTM.createTask(title, description, LocalDateTime.now(), Duration.ofMinutes(100));
-        Assertions.assertTrue(fBTM.getTasks().containsKey(task.getId()));
+        Task task = fBTM.createTask(fBTM.createId(), title, description, LocalDateTime.now(), Duration.ofMinutes(100));
+        Assertions.assertTrue(fBTM.getTasks().contains(task));
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(tempFile, StandardCharsets.UTF_8))) {
             while (bufferedReader.ready()) {
@@ -127,7 +139,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         }
 
         fBTM.deleteTask(task.getId());
-        Assertions.assertFalse(fBTM.getTasks().containsKey(task.getId()));
+        Assertions.assertFalse(fBTM.getTasks().contains(task));
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(tempFile, StandardCharsets.UTF_8))) {
             boolean flag = true;
@@ -148,8 +160,8 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
     void deleteEpic() {
         String title = "t";
         String description = "d";
-        Epic epic = fBTM.createEpic(title, description, null, null);
-        Assertions.assertTrue(fBTM.getEpics().containsKey(epic.getId()));
+        Epic epic = fBTM.createEpic(fBTM.createId(), title, description, null, null);
+        Assertions.assertTrue(fBTM.getEpics().contains(epic));
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(tempFile, StandardCharsets.UTF_8))) {
             while (bufferedReader.ready()) {
@@ -166,7 +178,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         }
 
         fBTM.deleteEpic(epic.getId());
-        Assertions.assertFalse(fBTM.getEpics().containsKey(epic.getId()));
+        Assertions.assertFalse(fBTM.getEpics().contains(epic));
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(tempFile, StandardCharsets.UTF_8))) {
             boolean flag = true;
@@ -187,9 +199,9 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
     void deleteSubtask() {
         String title = "t";
         String description = "d";
-        Epic epic = fBTM.createEpic(title, description, null, null);
+        Epic epic = fBTM.createEpic(fBTM.createId(), title, description, null, null);
         Subtask subtask = fBTM.createSubtask(epic.getId(), title, description, LocalDateTime.now(), Duration.ofMinutes(400));
-        Assertions.assertTrue(fBTM.getSubtasks().containsKey(subtask.getId()));
+        Assertions.assertTrue(fBTM.getSubtasks().contains(subtask));
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(tempFile, StandardCharsets.UTF_8))) {
             while (bufferedReader.ready()) {
@@ -207,8 +219,8 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
 
         fBTM.deleteSubtask(subtask.getId());
         fBTM.deleteEpic(epic.getId());
-        Assertions.assertFalse(fBTM.getSubtasks().containsKey(subtask.getId()));
-        Assertions.assertFalse(fBTM.getEpics().containsKey(epic.getId()));
+        Assertions.assertFalse(fBTM.getSubtasks().contains(subtask));
+        Assertions.assertFalse(fBTM.getEpics().contains(epic));
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(tempFile, StandardCharsets.UTF_8))) {
             boolean flag = true;
@@ -229,7 +241,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
     void updateTaskStatusOfTask() {
         String title = "t";
         String description = "d";
-        Task task = fBTM.createTask(title, description, LocalDateTime.now(), Duration.ofMinutes(500));
+        Task task = fBTM.createTask(fBTM.createId(), title, description, LocalDateTime.now(), Duration.ofMinutes(500));
         Assertions.assertEquals(task.getTaskStatus(), TaskStatus.NEW);
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(tempFile, StandardCharsets.UTF_8))) {
@@ -261,7 +273,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
     void updateTaskStatusOfSubtask() {
         String title = "t";
         String description = "d";
-        Epic epic = fBTM.createEpic(title, description, null, null);
+        Epic epic = fBTM.createEpic(fBTM.createId(), title, description, null, null);
         Assertions.assertEquals(epic.getTaskStatus(), TaskStatus.NEW);
         Subtask subtask = fBTM.createSubtask(epic.getId(), title, description, LocalDateTime.now(), Duration.ofMinutes(100));
         Assertions.assertEquals(subtask.getTaskStatus(), TaskStatus.NEW);
@@ -299,7 +311,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         String title = "t";
         String description = "d";
         Assertions.assertTrue(fBTM.getTasks().isEmpty());
-        Task task = fBTM.createTask(title, description, LocalDateTime.now(), Duration.ofMinutes(100));
+        Task task = fBTM.createTask(fBTM.createId(), title, description, LocalDateTime.now(), Duration.ofMinutes(100));
         Assertions.assertFalse(fBTM.getTasks().isEmpty());
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(tempFile, StandardCharsets.UTF_8))) {
@@ -335,7 +347,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         String title = "t";
         String description = "d";
         Assertions.assertTrue(fBTM.getEpics().isEmpty());
-        Epic epic = fBTM.createEpic(title, description, null, null);
+        Epic epic = fBTM.createEpic(fBTM.createId(), title, description, null, null);
         Assertions.assertFalse(fBTM.getEpics().isEmpty());
 
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(tempFile, StandardCharsets.UTF_8))) {
@@ -371,7 +383,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
         String title = "t";
         String description = "d";
         Assertions.assertTrue(fBTM.getEpics().isEmpty());
-        Epic epic = fBTM.createEpic(title, description, null, null);
+        Epic epic = fBTM.createEpic(fBTM.createId(), title, description, null, null);
         Subtask subtask = fBTM.createSubtask(epic.getId(), title, description, LocalDateTime.now(), Duration.ofMinutes(100));
         Assertions.assertFalse(fBTM.getSubtasks().isEmpty());
 
