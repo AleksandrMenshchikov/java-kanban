@@ -1,9 +1,10 @@
+import constants.TaskStatus;
 import controllers.Managers;
 import controllers.TaskManager;
+import exceptions.CrossTaskException;
 import models.Epic;
 import models.Subtask;
 import models.Task;
-import models.TaskStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +15,7 @@ abstract class TaskManagerTest {
     TaskManager taskManager = new Managers().getDefault();
 
     @Test
-    void getTasks() {
+    void getTasks() throws CrossTaskException {
         Assertions.assertTrue(taskManager.getTasks().isEmpty());
         taskManager.createTask(taskManager.createId(), "t", "d", LocalDateTime.now(), Duration.ofMinutes(100));
         Assertions.assertFalse(taskManager.getTasks().isEmpty());
@@ -28,7 +29,7 @@ abstract class TaskManagerTest {
     }
 
     @Test
-    void getSubtasks() {
+    void getSubtasks() throws CrossTaskException {
         taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
         int epicId = -1;
 
@@ -43,7 +44,7 @@ abstract class TaskManagerTest {
     }
 
     @Test
-    void getTaskById() {
+    void getTaskById() throws CrossTaskException {
         taskManager.createTask(taskManager.createId(), "t", "d", LocalDateTime.now(), Duration.ofMinutes(100));
         Integer id = null;
 
@@ -69,7 +70,7 @@ abstract class TaskManagerTest {
     }
 
     @Test
-    void getSubtaskById() {
+    void getSubtaskById() throws CrossTaskException {
         taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
         Integer epicId = null;
 
@@ -85,7 +86,7 @@ abstract class TaskManagerTest {
     }
 
     @Test
-    void getSubtasksByEpicId() {
+    void getSubtasksByEpicId() throws CrossTaskException {
         taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
         int epicId = -1;
 
@@ -99,7 +100,7 @@ abstract class TaskManagerTest {
     }
 
     @Test
-    void updateTask() {
+    void updateTask() throws CrossTaskException {
         taskManager.createTask(taskManager.createId(), "t", "d", LocalDateTime.now(), Duration.ofMinutes(100));
         Integer taskId1 = null;
         Task task1 = null;
@@ -112,6 +113,7 @@ abstract class TaskManagerTest {
 
         Assertions.assertEquals(1, taskManager.getTasks().size());
         Assertions.assertNotNull(taskId1);
+
         taskManager.updateTask(taskId1, "t", "d", LocalDateTime.now().plusMinutes(100), Duration.ofMinutes(200));
 
         Integer taskId2 = null;
@@ -159,7 +161,7 @@ abstract class TaskManagerTest {
     }
 
     @Test
-    void updateSubtask() {
+    void updateSubtask() throws CrossTaskException {
         taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
         Epic epic = null;
 
@@ -180,7 +182,7 @@ abstract class TaskManagerTest {
     }
 
     @Test
-    void createTask() {
+    void createTask() throws CrossTaskException {
         Assertions.assertTrue(taskManager.getTasks().isEmpty());
         taskManager.createTask(taskManager.createId(), "t", "d", LocalDateTime.now(), Duration.ofMinutes(300));
         Assertions.assertFalse(taskManager.getTasks().isEmpty());
@@ -194,7 +196,7 @@ abstract class TaskManagerTest {
     }
 
     @Test
-    void createSubtask() {
+    void createSubtask() throws CrossTaskException {
         Assertions.assertTrue(taskManager.getSubtasks().isEmpty());
         taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
         Epic epic = null;
@@ -210,9 +212,10 @@ abstract class TaskManagerTest {
     }
 
     @Test
-    void deleteTask() {
+    void deleteTask() throws CrossTaskException {
         Assertions.assertTrue(taskManager.getTasks().isEmpty());
         taskManager.createTask(taskManager.createId(), "t", "d", LocalDateTime.now(), Duration.ofMinutes(300));
+
         Assertions.assertFalse(taskManager.getTasks().isEmpty());
         Task task = null;
 
@@ -242,7 +245,7 @@ abstract class TaskManagerTest {
     }
 
     @Test
-    void deleteSubtask() {
+    void deleteSubtask() throws CrossTaskException {
         Assertions.assertTrue(taskManager.getSubtasks().isEmpty());
         taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
         Epic epic = null;
@@ -269,7 +272,7 @@ abstract class TaskManagerTest {
     }
 
     @Test
-    void updateTaskStatusOfTask() {
+    void updateTaskStatusOfTask() throws CrossTaskException {
         taskManager.createTask(taskManager.createId(), "t", "d", LocalDateTime.now(), Duration.ofMinutes(300));
         Task task = null;
 
@@ -286,7 +289,7 @@ abstract class TaskManagerTest {
     }
 
     @Test
-    void updateTaskStatusOfSubtask() {
+    void updateTaskStatusOfSubtask() throws CrossTaskException {
         taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
         Epic epic = null;
 
@@ -310,7 +313,7 @@ abstract class TaskManagerTest {
     }
 
     @Test
-    void clearTasks() {
+    void clearTasks() throws CrossTaskException {
         Assertions.assertTrue(taskManager.getTasks().isEmpty());
         taskManager.createTask(taskManager.createId(), "t", "d", LocalDateTime.now(), Duration.ofMinutes(300));
         Assertions.assertFalse(taskManager.getTasks().isEmpty());
@@ -328,7 +331,7 @@ abstract class TaskManagerTest {
     }
 
     @Test
-    void clearSubtasks() {
+    void clearSubtasks() throws CrossTaskException {
         Assertions.assertTrue(taskManager.getSubtasks().isEmpty());
         taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
         Epic epic = null;
@@ -345,7 +348,7 @@ abstract class TaskManagerTest {
     }
 
     @Test
-    void getHistory() {
+    void getHistory() throws CrossTaskException {
         taskManager.createTask(taskManager.createId(), "t", "d", LocalDateTime.now(), Duration.ofMinutes(300));
         taskManager.createEpic(taskManager.createId(), "t", "d", null, null);
 

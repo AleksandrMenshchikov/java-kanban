@@ -1,4 +1,4 @@
-package models;
+package constants;
 
 public enum TaskStatus {
     NEW,

@@ -1,6 +1,6 @@
 package models;
 
-public class Node<E> {
+public final class Node<E> {
     private final E data;
     private Node<E> prev;
     private Node<E> next;

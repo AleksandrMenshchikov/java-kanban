@@ -1,6 +1,9 @@
 package models;
 
+import constants.TaskStatus;
+import constants.TaskType;
 import controllers.HistoryManager;
+import exceptions.CrossTaskException;
 import exceptions.ManagerSaveException;
 
 import java.io.BufferedReader;
@@ -15,10 +18,10 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-public class FileBackedTaskManager extends InMemoryTaskManager {
+public final class FileBackedTaskManager extends InMemoryTaskManager {
     private final File file;
 
-    public FileBackedTaskManager(HistoryManager historyManager, File file) {
+    public FileBackedTaskManager(HistoryManager historyManager, File file) throws CrossTaskException {
         super(historyManager);
         this.file = file;
         loadFromFile(file);
@@ -40,7 +43,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return false;
     }
 
-    private void loadFromFile(File file) {
+    private void loadFromFile(File file) throws CrossTaskException {
         boolean fileExists = isFileExists();
         if (!fileExists) return;
 
@@ -75,7 +78,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
 
                 if (taskType.equals(TaskType.TASK.toString())) {
-                    Task task = createTask(id, title, description, LocalDateTime.parse(startTime), Duration.parse(duration));
+                    Task task = null;
+                    try {
+                        task = createTask(id, title, description, LocalDateTime.parse(startTime), Duration.parse(duration));
+                    } catch (CrossTaskException e) {
+                        e.printStackTrace();
+                    }
 
                     try {
                         task.setTaskStatus(TaskStatus.valueOf(taskStatus));
@@ -214,7 +222,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public Task createTask(int taskId, String title, String description, LocalDateTime startTime, Duration duration) {
+    public Task createTask(int taskId, String title, String description, LocalDateTime startTime, Duration duration) throws CrossTaskException {
         Task task = super.createTask(taskId, title, description, startTime, duration);
         save();
         return task;
@@ -228,7 +236,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public Subtask createSubtask(int epicId, String title, String description, LocalDateTime startTime, Duration duration) {
+    public Subtask createSubtask(int epicId, String title, String description, LocalDateTime startTime, Duration duration) throws CrossTaskException {
         Subtask subtask = super.createSubtask(epicId, title, description, startTime, duration);
         save();
         return subtask;
@@ -283,20 +291,23 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void updateTask(int taskId, String title, String description, LocalDateTime startTime, Duration duration) {
-        super.updateTask(taskId, title, description, startTime, duration);
+    public Task updateTask(int taskId, String title, String description, LocalDateTime startTime, Duration duration) throws CrossTaskException {
+        Task task = super.updateTask(taskId, title, description, startTime, duration);
         save();
+        return task;
     }
 
     @Override
-    public void updateEpic(int epicId, String title, String description, LocalDateTime startTime, Duration duration) {
-        super.updateEpic(epicId, title, description, startTime, duration);
+    public Epic updateEpic(int epicId, String title, String description, LocalDateTime startTime, Duration duration) {
+        Epic epic = super.updateEpic(epicId, title, description, startTime, duration);
         save();
+        return epic;
     }
 
     @Override
-    public void updateSubtask(int subtaskId, String title, String description, LocalDateTime startTime, Duration duration) {
-        super.updateSubtask(subtaskId, title, description, startTime, duration);
+    public Subtask updateSubtask(int subtaskId, String title, String description, LocalDateTime startTime, Duration duration) throws CrossTaskException {
+        Subtask subtask = super.updateSubtask(subtaskId, title, description, startTime, duration);
         save();
+        return subtask;
     }
 }

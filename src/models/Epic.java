@@ -3,9 +3,10 @@ package models;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public final class Epic extends Task {
-    private final ArrayList<Integer> subtaskIds = new ArrayList<>();
+    private final List<Integer> subtaskIds = new ArrayList<>();
     private LocalDateTime endTime;
 
     public Epic(int id, String title, String description, LocalDateTime startTime, Duration duration) {
@@ -25,7 +26,7 @@ public final class Epic extends Task {
         subtaskIds.add(subtaskId);
     }
 
-    public ArrayList<Integer> getSubtaskIds() {
+    public List<Integer> getSubtaskIds() {
         return subtaskIds;
     }
 
@@ -43,7 +44,7 @@ public final class Epic extends Task {
         String superString = super.toString();
 
         return superString.substring(0, superString.length() - 1) + ", " +
-                "endTime=" + endTime +
+                "endTime=" + endTime + ", " +
                 "subtaskIds=" + subtaskIds +
                 '}';
     }
