@@ -12,7 +12,7 @@ import java.net.InetSocketAddress;
 
 public class HttpTaskServer {
     public static final TaskManager taskManager = new Managers().getDefault();
-    static private HttpServer httpServer;
+    static HttpServer httpServer;
 
     public static void main(String[] args) throws IOException {
         start();
