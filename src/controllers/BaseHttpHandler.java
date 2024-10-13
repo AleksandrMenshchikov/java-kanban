@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class BaseHttpHandler {
+    public static final TaskManager taskManager = new Managers().getDefault();
     private static final Gson gson = new GsonBuilder()
             .setPrettyPrinting()
             .serializeNulls()

@@ -19,11 +19,6 @@ import java.time.LocalDateTime;
 import java.util.regex.Pattern;
 
 public final class SubtaskHandler extends BaseHttpHandler implements HttpHandler {
-    private final TaskManager taskManager;
-
-    public SubtaskHandler(TaskManager taskManager) {
-        this.taskManager = taskManager;
-    }
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {

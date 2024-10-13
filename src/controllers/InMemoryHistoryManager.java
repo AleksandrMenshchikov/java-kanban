@@ -1,6 +1,7 @@
-package models;
+package controllers;
 
-import controllers.HistoryManager;
+import models.Node;
+import models.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;

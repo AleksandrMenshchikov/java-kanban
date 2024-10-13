@@ -13,7 +13,7 @@ import java.net.http.HttpResponse;
 
 public abstract class BaseHandlerTest {
     protected final Gson gson = BaseHttpHandler.getGson();
-    protected TaskManager taskManager = HttpTaskServer.taskManager;
+    protected TaskManager taskManager = BaseHttpHandler.taskManager;
 
     @BeforeEach
     void setUp() throws IOException {

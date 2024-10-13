@@ -1,9 +1,10 @@
-package models;
+package controllers;
 
 import constants.TaskStatus;
-import controllers.HistoryManager;
-import controllers.TaskManager;
 import exceptions.CrossTaskException;
+import models.Epic;
+import models.Subtask;
+import models.Task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
