@@ -1,9 +1,10 @@
 package controllers;
 
+import constants.TaskStatus;
+import exceptions.CrossTaskException;
 import models.Epic;
 import models.Subtask;
 import models.Task;
-import models.TaskStatus;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -26,19 +27,19 @@ public interface TaskManager {
 
     List<Subtask> getSubtasksByEpicId(int epicId);
 
-    void updateTask(int taskId, String title, String description, LocalDateTime startTime, Duration duration);
+    Task updateTask(int taskId, String title, String description, LocalDateTime startTime, Duration duration) throws CrossTaskException;
 
-    void updateEpic(int epicId, String title, String description, LocalDateTime startTime, Duration duration);
+    Epic updateEpic(int epicId, String title, String description, LocalDateTime startTime, Duration duration);
 
     void updateEpicTime(Epic epic);
 
-    void updateSubtask(int subtaskId, String title, String description, LocalDateTime startTime, Duration duration);
+    Subtask updateSubtask(int subtaskId, String title, String description, LocalDateTime startTime, Duration duration) throws CrossTaskException;
 
-    Task createTask(int taskId, String title, String description, LocalDateTime startTime, Duration duration);
+    Task createTask(int taskId, String title, String description, LocalDateTime startTime, Duration duration) throws CrossTaskException;
 
     Epic createEpic(int epicId, String title, String description, LocalDateTime startTime, Duration duration);
 
-    Subtask createSubtask(int epicId, String title, String description, LocalDateTime startTime, Duration duration);
+    Subtask createSubtask(int epicId, String title, String description, LocalDateTime startTime, Duration duration) throws CrossTaskException;
 
     void deleteTask(int taskId);
 

@@ -1,7 +1,10 @@
-package models;
+package controllers;
 
-import controllers.HistoryManager;
-import controllers.TaskManager;
+import constants.TaskStatus;
+import exceptions.CrossTaskException;
+import models.Epic;
+import models.Subtask;
+import models.Task;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -109,14 +112,14 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateTask(int taskId, String title, String description, LocalDateTime startTime, Duration duration) {
+    public Task updateTask(int taskId, String title, String description, LocalDateTime startTime, Duration duration) throws CrossTaskException {
         Task oldTask = tasks.get(taskId);
 
         if (oldTask != null) {
             Task task = new Task(createId(), title, description, startTime, duration);
 
             if (checkCrossTask(task)) {
-                throw new RuntimeException("Задача пересекается по времени выполнения");
+                throw new CrossTaskException();
             }
 
             tasks.remove(taskId);
@@ -124,12 +127,15 @@ public class InMemoryTaskManager implements TaskManager {
             tasks.put(task.getId(), task);
             task.setTaskStatus(TaskStatus.NEW);
             addPrioritizedTask(task);
+            return task;
         }
+
+        return null;
     }
 
     @Override
     public void updateEpicTime(Epic epic) {
-        ArrayList<Integer> subtaskIds = epic.getSubtaskIds();
+        List<Integer> subtaskIds = epic.getSubtaskIds();
 
         List<Subtask> list = getSubtasks().stream().filter(elem -> subtaskIds.contains(elem.getId())).sorted(Comparator.comparing(Task::getStartTime)).toList();
         epic.setStartTime(list.getFirst().getStartTime());
@@ -144,7 +150,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void updateEpic(int epicId, String title, String description, LocalDateTime startTime, Duration duration) {
+    public Epic updateEpic(int epicId, String title, String description, LocalDateTime startTime, Duration duration) {
         if (epics.containsKey(epicId)) {
             for (Integer subtaskId : getEpicById(epicId).getSubtaskIds()) {
                 subtasks.remove(subtaskId);
@@ -159,18 +165,20 @@ public class InMemoryTaskManager implements TaskManager {
             Epic epic1 = new Epic(createId(), title, description, startTime, duration);
             epics.put(epic1.getId(), epic1);
             epic1.setTaskStatus(TaskStatus.NEW);
+            return epic1;
         }
+        return null;
     }
 
     @Override
-    public void updateSubtask(int subtaskId, String title, String description, LocalDateTime startTime, Duration duration) {
+    public Subtask updateSubtask(int subtaskId, String title, String description, LocalDateTime startTime, Duration duration) throws CrossTaskException {
         Subtask s = getSubtaskById(subtaskId);
 
         if (s != null) {
             Subtask subtask = new Subtask(createId(), title, description, startTime, duration);
 
             if (checkCrossTask(subtask)) {
-                throw new RuntimeException("Задача пересекается по времени выполнения");
+                throw new CrossTaskException();
             }
 
             Epic epic = getEpicById(s.getEpicId());
@@ -183,15 +191,17 @@ public class InMemoryTaskManager implements TaskManager {
             updateTaskStatusOfSubtask(subtask.getId(), TaskStatus.NEW);
             updateEpicTime(epic);
             addPrioritizedTask(subtask);
+            return subtask;
         }
+        return null;
     }
 
     @Override
-    public Task createTask(int taskId, String title, String description, LocalDateTime startTime, Duration duration) {
+    public Task createTask(int taskId, String title, String description, LocalDateTime startTime, Duration duration) throws CrossTaskException {
         Task task = new Task(taskId, title, description, startTime, duration);
 
         if (checkCrossTask(task)) {
-            throw new RuntimeException("Задача пересекается по времени выполнения");
+            throw new CrossTaskException();
         }
 
         tasks.put(task.getId(), task);
@@ -209,12 +219,12 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public Subtask createSubtask(int epicId, String title, String description, LocalDateTime startTime, Duration duration) {
+    public Subtask createSubtask(int epicId, String title, String description, LocalDateTime startTime, Duration duration) throws CrossTaskException {
         if (epics.containsKey(epicId)) {
             Subtask subtask = new Subtask(createId(), title, description, startTime, duration);
 
             if (checkCrossTask(subtask)) {
-                throw new RuntimeException("Задача пересекается по времени выполнения");
+                throw new CrossTaskException();
             }
 
             Epic epic = getEpicById(epicId);

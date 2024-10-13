@@ -1,10 +1,11 @@
+import constants.TaskStatus;
+import constants.TaskType;
+import controllers.FileBackedTaskManager;
 import controllers.Managers;
+import exceptions.CrossTaskException;
 import models.Epic;
-import models.FileBackedTaskManager;
 import models.Subtask;
 import models.Task;
-import models.TaskStatus;
-import models.TaskType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
     }
 
     @BeforeEach
-    void init() {
+    void init() throws CrossTaskException {
         fBTM = new Managers().getDefaultFile(tempFile);
     }
 
@@ -59,7 +60,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
 
     @Override
     @Test
-    void createTask() {
+    void createTask() throws CrossTaskException {
         String title = "t";
         String description = "d";
         Task task = fBTM.createTask(fBTM.createId(), title, description, LocalDateTime.now(), Duration.ofMinutes(20));
@@ -95,7 +96,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
 
     @Override
     @Test
-    void createSubtask() {
+    void createSubtask() throws CrossTaskException {
         String title = "t";
         String description = "d";
         Epic epic = fBTM.createEpic(fBTM.createId(), title, description, null, null);
@@ -118,7 +119,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
 
     @Override
     @Test
-    void deleteTask() {
+    void deleteTask() throws CrossTaskException {
         String title = "t";
         String description = "d";
         Task task = fBTM.createTask(fBTM.createId(), title, description, LocalDateTime.now(), Duration.ofMinutes(100));
@@ -196,7 +197,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
 
     @Override
     @Test
-    void deleteSubtask() {
+    void deleteSubtask() throws CrossTaskException {
         String title = "t";
         String description = "d";
         Epic epic = fBTM.createEpic(fBTM.createId(), title, description, null, null);
@@ -238,7 +239,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
 
     @Override
     @Test
-    void updateTaskStatusOfTask() {
+    void updateTaskStatusOfTask() throws CrossTaskException {
         String title = "t";
         String description = "d";
         Task task = fBTM.createTask(fBTM.createId(), title, description, LocalDateTime.now(), Duration.ofMinutes(500));
@@ -270,7 +271,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
 
     @Override
     @Test
-    void updateTaskStatusOfSubtask() {
+    void updateTaskStatusOfSubtask() throws CrossTaskException {
         String title = "t";
         String description = "d";
         Epic epic = fBTM.createEpic(fBTM.createId(), title, description, null, null);
@@ -307,7 +308,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
 
     @Override
     @Test
-    void clearTasks() {
+    void clearTasks() throws CrossTaskException {
         String title = "t";
         String description = "d";
         Assertions.assertTrue(fBTM.getTasks().isEmpty());
@@ -379,7 +380,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest {
 
     @Override
     @Test
-    void clearSubtasks() {
+    void clearSubtasks() throws CrossTaskException {
         String title = "t";
         String description = "d";
         Assertions.assertTrue(fBTM.getEpics().isEmpty());

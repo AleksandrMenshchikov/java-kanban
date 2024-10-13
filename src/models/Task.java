@@ -1,5 +1,7 @@
 package models;
 
+import constants.TaskStatus;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -20,43 +22,43 @@ public class Task {
         this.duration = duration;
     }
 
-    public final int getId() {
+    public int getId() {
         return id;
     }
 
-    public final TaskStatus getTaskStatus() {
+    public TaskStatus getTaskStatus() {
         return taskStatus;
     }
 
-    public final void setTaskStatus(TaskStatus taskStatus) {
+    public void setTaskStatus(TaskStatus taskStatus) {
         this.taskStatus = taskStatus;
     }
 
-    public final String getTitle() {
+    public String getTitle() {
         return title;
     }
 
-    public final String getDescription() {
+    public String getDescription() {
         return description;
     }
 
-    protected final LocalDateTime getStartTime() {
+    public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    protected final void setStartTime(LocalDateTime startTime) {
+    public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
     }
 
-    protected final Duration getDuration() {
+    public Duration getDuration() {
         return duration;
     }
 
-    protected final void setDuration(Duration duration) {
+    public void setDuration(Duration duration) {
         this.duration = duration;
     }
 
-    protected LocalDateTime getEndTime() {
+    public LocalDateTime getEndTime() {
         if (startTime == null || duration == null) {
             return null;
         }

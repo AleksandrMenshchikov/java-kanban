@@ -1,5 +1,5 @@
+import constants.TaskStatus;
 import models.Task;
-import models.TaskStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
