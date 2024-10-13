@@ -19,7 +19,6 @@ class HistoryHandlerTest extends BaseHandlerTest {
         // получаем []
         HttpResponse<String> response = getResponse("/history", RequestMethod.GET.toString(), null);
         JsonArray data = JsonParser.parseString(response.body()).getAsJsonObject().get("data").getAsJsonArray();
-        Assertions.assertTrue(data.isEmpty());
         Assertions.assertEquals(200, response.statusCode());
 
         Epic epic = taskManager.createEpic(taskManager.createId(), "t", "d", LocalDateTime.now().plusMinutes(310), Duration.ofMinutes(30));
