@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 
 public class HttpTaskServer {
-    static HttpServer httpServer;
+    private static HttpServer httpServer;
 
     public static void main(String[] args) throws IOException {
         start();
